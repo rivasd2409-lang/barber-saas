@@ -13,3 +13,11 @@ model Booking {
   date      DateTime
   createdAt DateTime @default(now())
 }
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  durationMin Int
+  price       Float
+  createdAt   DateTime @default(now())
+}
