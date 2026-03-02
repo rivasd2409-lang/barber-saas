@@ -38,7 +38,13 @@ npm run prisma:generate
 npm run prisma:migrate
 ```
 
-5. Levanta el proyecto:
+5. Ejecuta el seed de servicios:
+
+```bash
+npm run prisma:seed
+```
+
+6. Levanta el proyecto:
 
 ```bash
 npm run dev
@@ -49,4 +55,4 @@ Abre [http://localhost:3000](http://localhost:3000).
 ## Rutas incluidas
 
 - `/` → Muestra “Barber SaaS” y enlace a `/book`
-- `/book` → Pantalla mínima con título
+- `/book` → Lista de servicios desde Prisma y slots de ejemplo según selección
