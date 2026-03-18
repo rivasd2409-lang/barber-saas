@@ -7,17 +7,67 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Booking {
-  id        Int      @id @default(autoincrement())
+enum ManualBarberStatus {
+  AVAILABLE
+  OFF_DUTY
+}
+
+enum BookingStatus {
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model Barber {
+  id            Int                @id @default(autoincrement())
+  name          String             @unique
+  avatar        String?
+  stationNumber Int
+  manualStatus  ManualBarberStatus @default(AVAILABLE)
+  isActive      Boolean            @default(true)
+  createdAt     DateTime           @default(now())
+  bookings      Booking[]
+}
+
+model Customer {
+  id        Int       @id @default(autoincrement())
   name      String
-  date      DateTime
-  createdAt DateTime @default(now())
+  phone     String    @unique
+  email     String?
+  createdAt DateTime  @default(now())
+  bookings  Booking[]
+}
+
+model Booking {
+  id         Int           @id @default(autoincrement())
+  barberId   Int
+  barber     Barber        @relation(fields: [barberId], references: [id], onDelete: Restrict)
+  serviceId  Int
+  service    Service       @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  customerId Int
+  customer   Customer      @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  startAt    DateTime
+  endAt      DateTime
+  status     BookingStatus @default(CONFIRMED)
+  createdAt  DateTime      @default(now())
+
+  @@index([barberId, startAt, endAt])
+  @@index([customerId])
 }
 
 model Service {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
   durationMin Int
   price       Float
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
+  bookings    Booking[]
+}
+
+model ShopHours {
+  dayOfWeek Int     @id
+  openTime  String
+  closeTime String
+  isClosed  Boolean @default(false)
 }
